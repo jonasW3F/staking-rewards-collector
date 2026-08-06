@@ -50,10 +50,14 @@ export async function addStakingData(obj){
                 loopIndex = min(stakingObject.data.count - page*100,100);
             }
 
+            // Staking rewards can be paid under multiple event variants. Note that these must have
+            // an `amount` field with the value (in planks) of the reward.
+            const validStakingEvents = ["Reward", "ValidatorIncentivePaid"];
+
             for(let i=0; i < obj.data.numberOfDays; i++){
                 for(let x = 0; x < loopIndex; x++){
                     let tmp = dateToString(new Date(stakingObject.data.list[x].block_timestamp * 1000));
-                    if(tmp == obj.data.list[i].day & stakingObject.data.list[x].event_id == "Reward"){
+                    if(tmp == obj.data.list[i].day & validStakingEvents.includes(stakingObject.data.list[x].event_id)){
                         found += 1;
 
                         let amountPlanks = parseInt(stakingObject.data.list[x].amount);
