@@ -1,4 +1,4 @@
-# Staking Rewards Collector v1.8.1
+# Staking Rewards Collector v1.8.2
 
 # Disclaimer
 Everyone using this tool does so at his/her own risk. Neither I nor Web3 Foundation guarantee that any data collected is valid and every user is responsible for double-checking the results of this tool. In addition to potential bugs in this code, you are relying on third-party data: Subscan's API is used to collect staking data and CoinGecko's / Cryptocompare's API is used to collect daily price data.
@@ -6,6 +6,9 @@ Everyone using this tool does so at his/her own risk. Neither I nor Web3 Foundat
 **This is no tax advice**: Every user is responsible to do his/her own research about how stake rewards are taxable in his/her regulatory framework.
 
 # Changelog
+## Version 1.8.2
+* Validator incentives, which are paid under a separate `ValidatorIncentivePaid` event since the DAP upgrade, are now properly collected (thanks to joepetrowski).
+
 ## Version 1.8.1
 * Added support for cryptocompare API keys
 
