@@ -2,6 +2,10 @@ import curl from 'curlrequest';
 import { getSubscanName } from './networks.js';
 import { dateToString, transformDDMMYYYtoUnix, min, sleep } from './utils.js';
 
+// Maximum number of entries per page allowed by the Subscan API. Requesting more
+// returns a 403 "row_limit_exceeded" error.
+const PAGE_SIZE = 25;
+
 export async function addStakingData(obj){
 
     const SLEEP_DELAY=obj.apiSleepDelay
@@ -20,11 +24,11 @@ export async function addStakingData(obj){
     So, we run the whole thing twice for networks that had a migration.
 
     The inner function runs at least once and parses the staking info for the given address. The API is structured in a way that you specify which
-    page is shown (probably like in the webpage). There is a maximum of 100 entries per page and the first page is 0. The following loop has two
+    page is shown (probably like in the webpage). There is a maximum of PAGE_SIZE entries per page and the first page is 0. The following loop has two
     for loops. The two loops compare every day of the object (by the user) with all entries of the staking object. This is necessary since you can
     have multiple rewards per day (so it is not enough to stop once you found a match). After both loops are finished, we have to check whether we need
     to make an additional API call. To check, we check if there is a date in the staking rewards (by the API) at least one day newer than the last day of the
-    specified range of the user. Only then can we be sure that we have all the data. If this is not the case, we parse the next 100 entries of the next page.
+    specified range of the user. Only then can we be sure that we have all the data. If this is not the case, we parse the next PAGE_SIZE entries of the next page.
      */
 
     for (let n = 0; n < networks.length; n++) {
@@ -45,9 +49,9 @@ export async function addStakingData(obj){
             }
 
             if(page==0){
-                loopIndex = min(stakingObject.data.count, 100);
+                loopIndex = min(stakingObject.data.count, PAGE_SIZE);
             } else {
-                loopIndex = min(stakingObject.data.count - page*100,100);
+                loopIndex = min(stakingObject.data.count - page*PAGE_SIZE,PAGE_SIZE);
             }
 
             // Staking rewards can be paid under multiple event variants. Note that these must have
@@ -98,7 +102,7 @@ function checkIfEnd(stakingObj, lastDay, loopIndex){
     let finished = true;
     let lastDayStakingObj = stakingObj.data.list.slice(-1)[0].block_timestamp;
 
-    if(transformDDMMYYYtoUnix(lastDay) < lastDayStakingObj && loopIndex == 100){
+    if(transformDDMMYYYtoUnix(lastDay) < lastDayStakingObj && loopIndex == PAGE_SIZE){
         finished = false;
     }
     return finished;
@@ -121,7 +125,7 @@ async function getStakingObject(address, page, network, subscan_apikey){
             'x-api-key': subscan_apikey
         },
         data: JSON.stringify({
-        'row':100,
+        'row':PAGE_SIZE,
         'page': page,
         'address': address
         }),
