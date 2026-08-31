@@ -38,8 +38,10 @@ async function main () {
   let end = userInput.end;
   let currency = userInput.currency;
   let exportOutput = userInput.exportOutput;
-  let subscan_apikey = userInput.subscan_apikey;
-  let cryptocompare_apikey = userInput.cryptocompare_apikey;
+  // Prefer API keys from environment variables so secrets don't need to be
+  // stored in plaintext in config/userInput.json.
+  let subscan_apikey = process.env.SUBSCAN_APIKEY || userInput.subscan_apikey;
+  let cryptocompare_apikey = process.env.CRYPTOCOMPARE_APIKEY || userInput.cryptocompare_apikey;
   let priceApi = userInput.priceApi;
   const apiSleepDelay = userInput.apiSleepDelay? userInput.apiSleepDelay: API_SLEEP_DELAY;
 

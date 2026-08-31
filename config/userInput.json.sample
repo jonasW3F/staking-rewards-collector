@@ -5,8 +5,8 @@
 "priceData": "true",
 "exportOutput": "true",
 "exportPrefix": "out/",
-"subscan_apikey": "",
-"cryptocompare_apikey": "",
+"subscan_apikey": "set via SUBSCAN_APIKEY env var, leave empty here",
+"cryptocompare_apikey": "set via CRYPTOCOMPARE_APIKEY env var, leave empty here",
 "priceApi": "cryptocompare",
 "apiSleepDelay": 1000,
 "addresses": [
